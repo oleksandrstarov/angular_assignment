@@ -312,74 +312,95 @@ X(a);e=isNaN(a)?-1:a;c.$validate()});c.$validators.maxlength=function(a,b){retur
 WEEKENDRANGE:[5,6],fullDate:"EEEE, MMMM d, y",longDate:"MMMM d, y",medium:"MMM d, y h:mm:ss a",mediumDate:"MMM d, y",mediumTime:"h:mm:ss a","short":"M/d/yy h:mm a",shortDate:"M/d/yy",shortTime:"h:mm a"},NUMBER_FORMATS:{CURRENCY_SYM:"$",DECIMAL_SEP:".",GROUP_SEP:",",PATTERNS:[{gSize:3,lgSize:3,maxFrac:3,minFrac:0,minInt:1,negPre:"-",negSuf:"",posPre:"",posSuf:""},{gSize:3,lgSize:3,maxFrac:2,minFrac:2,minInt:1,negPre:"-\u00a4",negSuf:"",posPre:"\u00a4",posSuf:""}]},id:"en-us",localeID:"en_US",pluralCat:function(a,
 c){var e=a|0,f=c;void 0===f&&(f=Math.min(b(a),3));Math.pow(10,f);return 1==e&&0==f?"one":"other"}})}]),B(v.document).ready(function(){ee(v.document,yc)}))})(window);!window.angular.$$csp().noInlineStyle&&window.angular.element(document.head).prepend('<style type="text/css">@charset "UTF-8";[ng\\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide:not(.ng-hide-animate){display:none !important;}ng\\:form{display:block;}.ng-animate-shim{visibility:hidden;}.ng-anchor{position:absolute;}</style>');
 //# sourceMappingURL=angular.min.js.map
-;'use strict';
+;
+'use strict';
 
 angular.module('app',[])
+    
+    
+    .controller('DishDetailController', ['$scope', function($scope) {
+        $scope.predicate = '';
+        $scope.reverse = false;
+        if($scope.predicate.indexOf('-') === 0){
+            $scope.reverse = true;
+        }
+        
+        $scope.dish={
+          name:'Uthapizza',
+          image: 'images/uthapizza.png',
+          category: 'mains', 
+          label:'Hot',
+          price:'4.99',
+          description:'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
+          comments: [
+               {
+                   rating:5,
+                   comment:"Imagine all the eatables, living in conFusion!",
+                   author:"John Lemon",
+                   date:"2012-10-16T17:57:28.556094Z"
+               },
+               {
+                   rating:4,
+                   comment:"Sends anyone to heaven, I wish I could get my mother-in-law to eat it!",
+                   author:"Paul McVites",
+                   date:"2014-09-05T17:57:28.556094Z"
+               },
+               {
+                   rating:3,
+                   comment:"Eat it, just eat it!",
+                   author:"Michael Jaikishan",
+                   date:"2015-02-13T17:57:28.556094Z"
+               },
+               {
+                   rating:4,
+                   comment:"Ultimate, Reaching for the stars!",
+                   author:"Ringo Starry",
+                   date:"2013-12-02T17:57:28.556094Z"
+               },
+               {
+                   rating:2,
+                   comment:"It's your birthday, we're gonna party!",
+                   author:"25 Cent",
+                   date:"2011-12-02T17:57:28.556094Z"
+               }
+               
+           ]
+        };
+        
+        $scope.orderByList = [
+          {value: 'rating', label: 'Rating'},
+          {value: 'comment', label: 'Comment'},
+          {value: 'author', label: 'Author'},
+          {value: 'date', label: 'Date'}
+        ];
+    }])
 
-    .controller('menuController', function(){
-        this.tab = 1;
-        this.filtText = '';
-        var dishes = [
-                 {
-                   name:'Uthapizza',
-                   image: 'images/uthapizza.png',
-                   category: 'mains',
-                   label:'Hot',
-                   price:'4.99',
-                   description:'A unique combination of Indian Uthappam (pancake) and Italian pizza, topped with Cerignola olives, ripe vine cherry tomatoes, Vidalia onion, Guntur chillies and Buffalo Paneer.',
-                   comment: ''
-                },
-                {
-                   name:'Zucchipakoda',
-                   image: 'images/zucchipakoda.png',
-                   category: 'appetizer',
-                   label:'',
-                   price:'1.99',
-                   description:'Deep fried Zucchini coated with mildly spiced Chickpea flour batter accompanied with a sweet-tangy tamarind sauce',
-                   comment: ''
-                },
-                {
-                   name:'Vadonut',
-                   image: 'images/vadonut.png',
-                   category: 'appetizer',
-                   label:'New',
-                   price:'1.99',
-                   description:'A quintessential ConFusion experience, is it a vada or is it a donut?',
-                   comment: ''
-                },
-                {
-                   name:'ElaiCheese Cake',
-                   image: 'images/elaicheesecake.png',
-                   category: 'dessert',
-                   label:'',
-                   price:'2.99',
-                   description:'A delectable, semi-sweet New York Style Cheese Cake, with Graham cracker crust and spiced with Indian cardamoms',
-                   comment: ''
-                }
-                ];
-        this.dishes = dishes;
+    .controller('DishCommentController', ['$scope', function($scope) {
         
-        this.select = function(setTab){
-            if (setTab === 2){
-                this.filtText = "appetizer";
-            }
-            else if (setTab === 3){
-                this.filtText = "mains";
-            }
-            else if (setTab === 4){
-                this.filtText = "dessert";
-            }
-            else{
-                this.filtText = "";
-            }
-            console.log(this.filtText);
-            this.tab = setTab;
+        $scope.userComment = {
+            rating:5,
+            comment:'',
+            author:'',
+            date: null
         };
         
-        this.isSelected = function(checkTab){
-            return (this.tab === checkTab);
+        $scope.submitComment = function () {
+            $scope.userComment.rating = Number($scope.userComment.rating);
+            
+            $scope.userComment.date = new Date().toISOString();
+            $scope.dish.comments.push($scope.userComment);
+            $scope.userCommentForm.$setPristine();
+            $scope.userComment = {
+                rating:5,
+                comment:'',
+                author:'',
+                date: null
+            };
+
+                            
         };
-        
-        
-        
-    });
+    }])
+
+
+
+;
